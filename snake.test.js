@@ -1,4 +1,4 @@
-// const Snake = require('./snake');
+// Const Snake = require('./snake');
 
 // describe('Snake', () => {
 //   let snake;
