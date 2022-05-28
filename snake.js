@@ -35,7 +35,7 @@ const gameSound = new Audio('gameSound.mp3');
 // Game loop
 function drawGame() {
   changeSnakePosition();
-  let result = isGameOver();
+  const result = isGameOver();
   if (result) {
     return;
   }
@@ -60,7 +60,7 @@ function drawGame() {
 
   setTimeout(drawGame, 1000 / speed);
 }
- 
+
 function isGameOver() {
   let gameOver = false;
 
