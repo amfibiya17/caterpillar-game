@@ -12,14 +12,14 @@ class SnakePart {
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
-const speed = 6;
+let speed = 6;
 
 const tileCount = 20;
 const tileSize = canvas.width / tileCount - 2;
 let headX = 10;
 let headY = 10;
 const snakeParts = [];
-let tailLength = 1;
+let tailLength = 2;
 
 let appleX = 5;
 let appleY = 5;
@@ -29,10 +29,18 @@ let yVelocity = 0;
 
 let score = 0;
 
+const gulpSound = new Audio('gulp.mp3');
+const gameSound = new Audio('gameSound.mp3');
+
 // Game loop
 function drawGame() {
-  clearScreen();
   changeSnakePosition();
+  let result = isGameOver();
+  if (result) {
+    return;
+  }
+
+  clearScreen();
 
   checkAppleCollision();
   drawApple();
@@ -40,7 +48,58 @@ function drawGame() {
 
   drawScore();
 
+  if (score > 2) {
+    speed = 9;
+  }
+  if (score > 5) {
+    speed = 12;
+  }
+  if (score > 7) {
+    speed = 15;
+  }
+
   setTimeout(drawGame, 1000 / speed);
+}
+ 
+function isGameOver() {
+  let gameOver = false;
+
+  if (xVelocity === 0 && yVelocity === 0) {
+    return false;
+  }
+
+  // walls
+  if (headX < 0) {
+    gameOver = true;
+    gameSound.play();
+  } else if (headX === tileCount) {
+    gameOver = true;
+    gameSound.play();
+  } else if (headY < 0) {
+    gameOver = true;
+    gameSound.play();
+  } else if (headY === tileCount) {
+    gameOver = true;
+    gameSound.play();
+  }
+
+  for (let i = 0; i < snakeParts.length; i += 1) {
+    const part = snakeParts[i];
+    if (part.x === headX && part.y === headY) {
+      gameOver = true;
+      gameSound.play();
+      break;
+    }
+  }
+
+  if (gameOver) {
+    ctx.fileStyle = 'white';
+    ctx.font = '50px Verdana';
+
+    ctx.fillText('Game Over!', canvas.width / 6.5, canvas.height / 2);
+  }
+
+  return gameOver;
 }
 
 function drawScore() {
@@ -85,6 +144,7 @@ function checkAppleCollision() {
     appleY = Math.floor(Math.random() * tileCount);
     tailLength += 1;
     score += 1;
+    gulpSound.play();
   }
 }
 

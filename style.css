@@ -5,6 +5,17 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  font-family: Verdana;
+}
+
+h1 {
+  line-height: 48px;
+  font-size: 44px;
+  color: #000000;
+  font-weight: 900;
+  text-align: center;
+  margin: 20px;
+  font-family: Verdana;
 }
 
 canvas {
