@@ -32,11 +32,34 @@ let score = 0;
 const gulpSound = new Audio('gulp.mp3');
 const gameSound = new Audio('gameSound.mp3');
 
+let previousXVelocity = 0;
+let previousYVelocity = 0;
+
 // Game loop
 function drawGame() {
+  // Was moving right add trying to move left
+  if (previousXVelocity === 1 && xVelocity === -1) {
+    xVelocity = previousXVelocity;
+  }
+  // Was moving left add trying to move right
+  if (previousXVelocity === -1 && xVelocity === 1) {
+    xVelocity = previousXVelocity;
+  }
+  // Was moving up add trying to move down
+  if (previousYVelocity === 1 && yVelocity === -1) {
+    yVelocity = previousYVelocity;
+  }
+  // Was moving down add trying to move up
+  if (previousYVelocity === -1 && yVelocity === 1) {
+    yVelocity = previousYVelocity;
+  }
+  previousXVelocity = xVelocity;
+  previousYVelocity = yVelocity;
+
   changeSnakePosition();
   const result = isGameOver();
   if (result) {
+    document.body.removeEventListener('keydown', keyDown);
     return;
   }
 
@@ -150,28 +173,28 @@ function checkAppleCollision() {
 
 function keyDown(event) {
   // Up
-  if (event.keyCode === 38) {
+  if (event.keyCode === 38 || event.keyBoard === 87) {
     if (yVelocity === 1) return; // <- preventing to go back opposite direction and exit the keyDown function
     yVelocity = -1;
     xVelocity = 0;
   }
 
   // Down
-  if (event.keyCode === 40) {
+  if (event.keyCode === 40 || event.keyBoard === 83) {
     if (yVelocity === -1) return;
     yVelocity = 1;
     xVelocity = 0;
   }
 
   // Left
-  if (event.keyCode === 37) {
+  if (event.keyCode === 37 || event.keyBoard === 65) {
     if (xVelocity === 1) return;
     yVelocity = 0;
     xVelocity = -1;
   }
 
   // Right
-  if (event.keyCode === 39) {
+  if (event.keyCode === 39 || event.keyBoard === 68) {
     if (xVelocity === -1) return;
     yVelocity = 0;
     xVelocity = 1;
