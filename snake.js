@@ -202,3 +202,7 @@ function keyDown(event) {
 document.body.addEventListener('keydown', keyDown);
 
 drawGame();
+
+module.exports = {
+  SnakePart,
+};
