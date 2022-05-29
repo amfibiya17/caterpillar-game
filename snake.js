@@ -78,6 +78,15 @@ function drawGame() {
   if (score > 7) {
     speed = 15;
   }
+  if (score > 10) {
+    speed = 17;
+  }
+  if (score > 13) {
+    speed = 20;
+  }
+  if (score > 15) {
+    speed = 22;
+  }
 
   setTimeout(drawGame, 1000 / speed);
 }
@@ -205,4 +214,7 @@ drawGame();
 
 module.exports = {
   SnakePart,
+  keyDown,
+  yVelocity,
+  xVelocity,
 };

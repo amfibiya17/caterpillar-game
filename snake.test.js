@@ -25,3 +25,35 @@ describe('SnakePart', () => {
     expect(snake.y).toBe(10);
   });
 });
+
+describe('keyDown function', () => {
+  let exportedVars;
+  beforeEach(() => {
+    document.documentElement.innerHTML = html.toString();
+    exportedVars = require('./snake');
+  });
+
+  afterEach(() => {
+    jest.resetModules();
+  });
+
+  it('moving up when pressing up keyboard', () => {
+    // let event = new KeyboardEvent('keydown', {'keyCode': 38});
+    // document.dispatchEvent(event);
+    // exportedVars.keyDown({ keyCode: 38 });
+
+    // expect(require('./snake').yVelocity).toBe(-1);
+  });
+
+  // it('', () => {
+    
+  // });
+
+  // it('', () => {
+    
+  // });
+
+  // it('', () => {
+    
+  // });
+});
