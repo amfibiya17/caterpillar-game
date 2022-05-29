@@ -1,4 +1,5 @@
 /* eslint-disable global-require */
+const { doesNotMatch } = require('assert');
 const fs = require('fs');
 const path = require('path');
 
@@ -28,8 +29,12 @@ describe('SnakePart', () => {
 
 describe('keyDown function', () => {
   let exportedVars;
+  // let ctx;
+
   beforeEach(() => {
     document.documentElement.innerHTML = html.toString();
+    const canvas = document.getElementById('game');
+    // ctx = canvas.getContext('2d');
     exportedVars = require('./snake');
   });
 
@@ -37,23 +42,21 @@ describe('keyDown function', () => {
     jest.resetModules();
   });
 
-  it('moving up when pressing up keyboard', () => {
-    // let event = new KeyboardEvent('keydown', {'keyCode': 38});
+  it('moving up when pressing up keyboard', (done) => {
+    // let event = new KeyboardEvent('keydown', { keyCode: 38 });
     // document.dispatchEvent(event);
-    // exportedVars.keyDown({ keyCode: 38 });
-
-    // expect(require('./snake').yVelocity).toBe(-1);
+    console.log(exportedVars.velocities);
+    exportedVars.keyDown({ keyCode: 38 });
+    console.log(exportedVars.velocities);
+    expect(exportedVars.velocities.y).toBe(-1);
   });
 
   // it('', () => {
-    
   // });
 
   // it('', () => {
-    
   // });
 
   // it('', () => {
-    
   // });
 });

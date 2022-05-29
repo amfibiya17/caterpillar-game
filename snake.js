@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-
+// eslint-disable-next-line max-classes-per-file
 class SnakePart {
   constructor(x, y) {
     this.x = x;
@@ -7,214 +7,216 @@ class SnakePart {
   }
 }
 
-const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
+class Game {
+  // eslint-disable-next-line no-shadow
+  constructor(canvas, gulpSound, gameSound) {
+    this.canvas = canvas;
+    this.gulpSound = gulpSound;
+    this.gameSound = gameSound;
+    this.ctx = this.canvas.getContext('2d');
+    this.speed = 6;
+    this.tileCount = 20;
+    this.tileSize = this.canvas.width / this.tileCount - 2;
+    this.headX = 10;
+    this.headY = 10;
+    this.snakeParts = [];
+    this.tailLength = 2;
+    this.appleX = 5;
+    this.appleY = 5;
+    this.score = 0;
+    this.xVelocity = 0;
+    this.yVelocity = 0;
+    this.previousXVelocity = 0;
+    this.previousYVelocity = 0;
 
-let speed = 6;
-
-const tileCount = 20;
-const tileSize = canvas.width / tileCount - 2;
-let headX = 10;
-let headY = 10;
-const snakeParts = [];
-let tailLength = 2;
-
-let appleX = 5;
-let appleY = 5;
-
-let xVelocity = 0;
-let yVelocity = 0;
-
-let score = 0;
-
-const gulpSound = new Audio('gulp.mp3');
-const gameSound = new Audio('gameSound.mp3');
-
-let previousXVelocity = 0;
-let previousYVelocity = 0;
-
-// Game loop
-function drawGame() {
-  // Was moving right add trying to move left
-  if (previousXVelocity === 1 && xVelocity === -1) {
-    xVelocity = previousXVelocity;
-  }
-  // Was moving left add trying to move right
-  if (previousXVelocity === -1 && xVelocity === 1) {
-    xVelocity = previousXVelocity;
-  }
-  // Was moving up add trying to move down
-  if (previousYVelocity === 1 && yVelocity === -1) {
-    yVelocity = previousYVelocity;
-  }
-  // Was moving down add trying to move up
-  if (previousYVelocity === -1 && yVelocity === 1) {
-    yVelocity = previousYVelocity;
-  }
-  previousXVelocity = xVelocity;
-  previousYVelocity = yVelocity;
-
-  changeSnakePosition();
-  const result = isGameOver();
-  if (result) {
-    document.body.removeEventListener('keydown', keyDown);
-    return;
+    document.body.addEventListener('keydown', this.keyDown.bind(this));
   }
 
-  clearScreen();
+  drawGame() {
+    console.log('drawing...');
+    // Was moving right add trying to move left
+    if (this.previousXVelocity === 1 && this.xVelocity === -1) {
+      this.xVelocity = this.previousXVelocity;
+    }
+    // Was moving left add trying to move right
+    if (this.previousXVelocity === -1 && this.xVelocity === 1) {
+      this.xVelocity = this.previousXVelocity;
+    }
+    // Was moving up add trying to move down
+    if (this.previousYVelocity === 1 && this.yVelocity === -1) {
+      this.yVelocity = this.previousYVelocity;
+    }
+    // Was moving down add trying to move up
+    if (this.previousYVelocity === -1 && this.yVelocity === 1) {
+      this.yVelocity = this.previousYVelocity;
+    }
+    this.previousXVelocity = this.xVelocity;
+    this.previousYVelocity = this.yVelocity;
 
-  checkAppleCollision();
-  drawApple();
-  drawSnake();
+    this.changeSnakePosition();
+    const result = this.isGameOver();
+    if (result) {
+      console.log('Game over!');
+      document.body.removeEventListener('keydown', this.keyDown.bind(this));
+      return;
+    }
 
-  drawScore();
+    this.clearScreen();
 
-  if (score > 2) {
-    speed = 9;
-  }
-  if (score > 5) {
-    speed = 12;
-  }
-  if (score > 7) {
-    speed = 15;
-  }
-  if (score > 10) {
-    speed = 17;
-  }
-  if (score > 13) {
-    speed = 20;
-  }
-  if (score > 15) {
-    speed = 22;
-  }
+    this.checkAppleCollision();
+    this.drawApple();
+    this.drawSnake();
 
-  setTimeout(drawGame, 1000 / speed);
-}
+    this.drawScore();
 
-function isGameOver() {
-  let gameOver = false;
-
-  if (xVelocity === 0 && yVelocity === 0) {
-    return false;
-  }
-
-  // walls
-  if (headX < 0) {
-    gameOver = true;
-    gameSound.play();
-  } else if (headX === tileCount) {
-    gameOver = true;
-    gameSound.play();
-  } else if (headY < 0) {
-    gameOver = true;
-    gameSound.play();
-  } else if (headY === tileCount) {
-    gameOver = true;
-    gameSound.play();
+    setTimeout(this.drawGame.bind(this), 1000 / this.speed);
   }
 
-  for (let i = 0; i < snakeParts.length; i += 1) {
-    const part = snakeParts[i];
-    if (part.x === headX && part.y === headY) {
+  isGameOver() {
+    let gameOver = false;
+
+    if (this.xVelocity === 0 && this.yVelocity === 0) {
+      return false;
+    }
+
+    // walls
+    if (this.headX < 0) {
       gameOver = true;
       gameSound.play();
-      break;
+    } else if (this.headX === this.tileCount) {
+      gameOver = true;
+      gameSound.play();
+    } else if (this.headY < 0) {
+      gameOver = true;
+      gameSound.play();
+    } else if (this.headY === this.tileCount) {
+      gameOver = true;
+      gameSound.play();
+    }
+
+    for (let i = 0; i < this.snakeParts.length; i += 1) {
+      const part = this.snakeParts[i];
+      if (part.x === this.headX && part.y === this.headY) {
+        gameOver = true;
+        gameSound.play();
+        break;
+      }
+    }
+
+    if (gameOver) {
+      this.ctx.fileStyle = 'white';
+      this.ctx.font = '50px Verdana';
+
+      this.ctx.fillText('Game Over!', canvas.width / 6.5, canvas.height / 2);
+    }
+
+    return gameOver;
+  }
+
+  drawScore() {
+    this.ctx.fillStyle = 'white';
+    this.ctx.font = '10px Verdana';
+    this.ctx.fillText(`Score ${this.score}`, canvas.width - 50, 10);
+  }
+
+  clearScreen() {
+    this.ctx.fillStyle = 'black';
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  drawSnake() {
+    this.ctx.fillStyle = 'green';
+    for (let i = 0; i < this.snakeParts.length; i += 1) {
+      const part = this.snakeParts[i];
+      this.ctx.fillRect(
+        part.x * this.tileCount,
+        part.y * this.tileCount,
+        this.tileSize,
+        this.tileSize
+      );
+    }
+
+    this.snakeParts.push(new SnakePart(this.headX, this.headY)); // putting the item at the end of the list next to the head
+    if (this.snakeParts.length > this.tailLength) {
+      this.snakeParts.shift(); // removing the furthers item from the snake parts if have more than our tailSize
+    }
+
+    this.ctx.fillStyle = 'orange';
+    this.ctx.fillRect(
+      this.headX * this.tileCount,
+      this.headY * this.tileCount,
+      this.tileSize,
+      this.tileSize
+    );
+  }
+
+  changeSnakePosition() {
+    this.headX += this.xVelocity;
+    this.headY += this.yVelocity;
+  }
+
+  drawApple() {
+    this.ctx.fillStyle = 'red';
+    this.ctx.fillRect(
+      this.appleX * this.tileCount,
+      this.appleY * this.tileCount,
+      this.tileSize,
+      this.tileSize
+    );
+  }
+
+  checkAppleCollision() {
+    if (this.appleX === this.headX && this.appleY === this.headY) {
+      this.appleX = Math.floor(Math.random() * this.tileCount);
+      this.appleY = Math.floor(Math.random() * this.tileCount);
+      this.tailLength += 1;
+      this.score += 1;
+      this.speed += 1;
+      gulpSound.play();
     }
   }
 
-  if (gameOver) {
-    ctx.fileStyle = 'white';
-    ctx.font = '50px Verdana';
+  keyDown(event) {
+    console.log(this);
+    // Up
+    if (event.keyCode === 38 || event.keyBoard === 87) {
+      if (this.yVelocity === 1) return; // <- preventing to go back opposite direction and exit the keyDown function
+      this.yVelocity = -1;
+      this.xVelocity = 0;
+    }
 
-    ctx.fillText('Game Over!', canvas.width / 6.5, canvas.height / 2);
-  }
+    // Down
+    if (event.keyCode === 40 || event.keyBoard === 83) {
+      if (this.yVelocity === -1) return;
+      this.yVelocity = 1;
+      this.xVelocity = 0;
+    }
 
-  return gameOver;
-}
+    // Left
+    if (event.keyCode === 37 || event.keyBoard === 65) {
+      if (this.xVelocity === 1) return;
+      this.yVelocity = 0;
+      this.xVelocity = -1;
+    }
 
-function drawScore() {
-  ctx.fillStyle = 'white';
-  ctx.font = '10px Verdana';
-  ctx.fillText(`Score ${score}`, canvas.width - 50, 10);
-}
-
-function clearScreen() {
-  ctx.fillStyle = 'black';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-}
-
-function drawSnake() {
-  ctx.fillStyle = 'green';
-  for (let i = 0; i < snakeParts.length; i += 1) {
-    const part = snakeParts[i];
-    ctx.fillRect(part.x * tileCount, part.y * tileCount, tileSize, tileSize);
-  }
-
-  snakeParts.push(new SnakePart(headX, headY)); // putting the item at the end of the list next to the head
-  if (snakeParts.length > tailLength) {
-    snakeParts.shift(); // removing the furthers item from the snake parts if have more than our tailSize
-  }
-
-  ctx.fillStyle = 'orange';
-  ctx.fillRect(headX * tileCount, headY * tileCount, tileSize, tileSize);
-}
-
-function changeSnakePosition() {
-  headX += xVelocity;
-  headY += yVelocity;
-}
-function drawApple() {
-  ctx.fillStyle = 'red';
-  ctx.fillRect(appleX * tileCount, appleY * tileCount, tileSize, tileSize);
-}
-
-function checkAppleCollision() {
-  if (appleX === headX && appleY === headY) {
-    appleX = Math.floor(Math.random() * tileCount);
-    appleY = Math.floor(Math.random() * tileCount);
-    tailLength += 1;
-    score += 1;
-    gulpSound.play();
+    // Right
+    if (event.keyCode === 39 || event.keyBoard === 68) {
+      if (this.xVelocity === -1) return;
+      this.yVelocity = 0;
+      this.xVelocity = 1;
+    }
   }
 }
 
-function keyDown(event) {
-  // Up
-  if (event.keyCode === 38 || event.keyBoard === 87) {
-    if (yVelocity === 1) return; // <- preventing to go back opposite direction and exit the keyDown function
-    yVelocity = -1;
-    xVelocity = 0;
-  }
+const canvas = document.getElementById('game');
+const gulpSound = new Audio('gulp.mp3');
+const gameSound = new Audio('gameSound.mp3');
+const game = new Game(canvas, gulpSound, gameSound);
 
-  // Down
-  if (event.keyCode === 40 || event.keyBoard === 83) {
-    if (yVelocity === -1) return;
-    yVelocity = 1;
-    xVelocity = 0;
-  }
+game.drawGame();
 
-  // Left
-  if (event.keyCode === 37 || event.keyBoard === 65) {
-    if (xVelocity === 1) return;
-    yVelocity = 0;
-    xVelocity = -1;
-  }
-
-  // Right
-  if (event.keyCode === 39 || event.keyBoard === 68) {
-    if (xVelocity === -1) return;
-    yVelocity = 0;
-    xVelocity = 1;
-  }
-}
-
-document.body.addEventListener('keydown', keyDown);
-
-drawGame();
-
-module.exports = {
-  SnakePart,
-  keyDown,
-  yVelocity,
-  xVelocity,
-};
+// module.exports = {
+//   SnakePart,
+//   keyDown,
+//   velocities,
+// };
