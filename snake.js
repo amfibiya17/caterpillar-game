@@ -56,7 +56,7 @@ class Game {
     this.changeSnakePosition();
     const result = this.isGameOver();
     if (result) {
-      console.log('Game over!');
+      console.log('Game Over! Refresh to play again!');
       document.body.removeEventListener('keydown', this.keyDown.bind(this));
       return;
     }
@@ -105,9 +105,9 @@ class Game {
 
     if (gameOver) {
       this.ctx.fileStyle = 'white';
-      this.ctx.font = '50px Verdana';
+      this.ctx.font = '17px Verdana';
 
-      this.ctx.fillText('Game Over!', canvas.width / 6.5, canvas.height / 2);
+      this.ctx.fillText('Game Over! Refresh to play again!', canvas.width / 6.5, canvas.height / 2);
     }
 
     return gameOver;
